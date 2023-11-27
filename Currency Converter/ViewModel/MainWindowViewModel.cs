@@ -88,14 +88,14 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     }
                 }
 
-                //UpdateCurAmount();
+                UpdateCurAmount();
             }
         }
     }
 
     public void CbTargetCurChanged(object sender, SelectionChangedEventArgs e)
     {
-        //UpdateCurAmount();
+        UpdateCurAmount();
     }
 
     public void BtSwitchCurOnClick(object sender, RoutedEventArgs e)
