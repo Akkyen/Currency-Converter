@@ -1,3 +1,3 @@
 ﻿namespace Currency_Converter.Model;
 
-public record CurrencyExchangeRates(DateOnly Date, Dictionary<String, double> Rates);
+public record CurrencyExchangeRates(DateOnly Date, Dictionary<string, double> Rates);

@@ -2,8 +2,8 @@
 
 public struct ApiCalls
 {
-    public const String ApiCallAllCurrencies = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json";
+    public const string ApiCallAllCurrencies = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json";
 
-    public const String ApiCallRatesStartTemplate = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/";
-    public const String ApiCallRatesEndTemplate = ".json";
+    public const string ApiCallRatesStartTemplate = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/";
+    public const string ApiCallRatesEndTemplate = ".json";
 }
