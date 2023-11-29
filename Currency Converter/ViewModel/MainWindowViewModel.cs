@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -12,6 +13,8 @@ namespace Currency_Converter.ViewModel;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
+    private DateOnly _date;
+
     private ObservableCollection<Currency> _currencies;
 
     private string _sourceAmount;
@@ -23,26 +26,37 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public MainWindowViewModel()
     {
         _currencies = new();
+
+        _date = DateOnly.FromDateTime(DateTime.Now);
         
         _sourceAmount = "0";
         _targetAmount = "0";
 
-        Setup();
+        ObtainCurrencies();
     }
 
-    private void Setup()
+    /// <summary>
+    /// This method extracts all available currencies from the used WebApi.
+    /// </summary>
+    /// <exception cref="Exception">
+    /// Thrown if the deserialization of the received JSON (containing the currencies) didn't work or if the WebApi call failed to return the available currencies.
+    /// </exception>
+    private void ObtainCurrencies()
     {
-        Task<string> task = Utils.ApiCall(ApiCalls.ApiCallAllCurrencies);
+        Task<string> task = Utils.WebApiCall(ApiCalls.ApiCallAllCurrencies);
 
         string json = task.Result;
 
         if (json != "")
         {
+            // The received data consists of tuples which contain the currency code and the name of the currency.
+            // The data is temporally saved in a sorted dict
             SortedDictionary<string, string>? currencyDict =
                 JsonConvert.DeserializeObject<SortedDictionary<string, string>>(json);
 
             if (currencyDict != null)
             {
+                // The data is used to create objects of type Currency, which are then inserted into the ObservableCollection _currencies.
                 foreach (var pair in currencyDict)
                 {
                     if (pair.Key != "")
@@ -50,27 +64,33 @@ public class MainWindowViewModel : INotifyPropertyChanged
                         _currencies.Add(new Currency(pair.Key, pair.Value));
                     }
                 }
-
+                // After all available currencies have been added, the View is getting notified about the changes to the property Currencies
                 OnPropertyChanged(nameof(Currencies));
             }
             else
             {
-                throw new Exception("JSON wasn't converted correctly!");
+                throw new Exception("JSON deserialization didn't work!");
             }
         }
         else
         {
-            throw new Exception("ApiCall failed to return available currencies!");
+            throw new Exception("WebApi call failed to return the available currencies!");
         }
     }
 
+    /// <summary>
+    /// Triggers if the target currency gets changed
+    /// Updates the exchange rates of the source currency
+    /// </summary>
+    /// <param name="sender">Combobox containing the currently selected target currency</param>
+    /// <param name="e"></param>
     public void CbSourceCurChanged(object sender, SelectionChangedEventArgs e)
     {
         if (SourceSelectedCurrency != null)
         {
             Regex regex = new Regex("(\"" + SourceSelectedCurrency.CurrencyCode + "\")");
 
-            string json = Utils.ApiCall(ApiCalls.ApiCallRatesStartTemplate +
+            string json = Utils.WebApiCall(ApiCalls.ApiCallRatesStartTemplate +
                                         SourceSelectedCurrency.CurrencyCode +
                                         ApiCalls.ApiCallRatesEndTemplate).Result;
 
@@ -78,12 +98,19 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
             if (json != "")
             {
-                if (SourceSelectedCurrency.ExchangeRates.Count == 0)
+                // Checks if there are no entries in ExchangeRates or if they are out of date
+                if (SourceSelectedCurrency.ExchangeRates.Count == 0 || !_date.Equals(SourceSelectedCurrency.Date))
                 {
                     CurrencyExchangeRates? cer = JsonConvert.DeserializeObject<CurrencyExchangeRates>(json);
 
                     if (cer != null)
                     {
+                        // If the date is either null or older than the provided one it updates it
+                        if (!_date.Equals(SourceSelectedCurrency.Date))
+                        {
+                            SourceSelectedCurrency.Date = cer.Date;
+                        }
+
                         SourceSelectedCurrency.ExchangeRates = cer.Rates;
                     }
                 }
@@ -93,6 +120,11 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Triggers if the target currency gets changed
+    /// </summary>
+    /// <param name="sender">Combobox containing the currently selected target currency</param>
+    /// <param name="e"></param>
     public void CbTargetCurChanged(object sender, SelectionChangedEventArgs e)
     {
         UpdateCurAmount();
@@ -100,8 +132,11 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public void BtSwitchCurOnClick(object sender, RoutedEventArgs e)
     {
-        (SourceAmount, TargetAmount) = (TargetAmount, SourceAmount);
-        (SourceSelectedCurrency, TargetSelectedCurrency) = (TargetSelectedCurrency, SourceSelectedCurrency);
+        if (SourceSelectedCurrency != null && TargetSelectedCurrency != null)
+        {
+            (SourceAmount, TargetAmount) = (TargetAmount, SourceAmount);
+            (SourceSelectedCurrency, TargetSelectedCurrency) = (TargetSelectedCurrency, SourceSelectedCurrency);
+        }
     }
 
     public void BtUpdateCurAmountOnClick(object sender, RoutedEventArgs e)
@@ -109,6 +144,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
         UpdateCurAmount();
     }
 
+    /// <summary>
+    /// Updates based on the available text in the target or source amount textbox either of the two.
+    /// If the data in 
+    /// </summary>
     private void UpdateCurAmount()
     {
         if (TargetSelectedCurrency != null && SourceSelectedCurrency != null)

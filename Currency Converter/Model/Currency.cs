@@ -5,6 +5,8 @@ namespace Currency_Converter.Model;
 
 public class Currency(String currencyCode, String currencyName) : INotifyPropertyChanged
 {
+    public DateOnly Date;
+
     public readonly String CurrencyCode = currencyCode;
     public readonly String CurrencyName = currencyName;
 

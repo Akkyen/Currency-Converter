@@ -24,8 +24,8 @@
         <Button x:Name="BtSwitchCur" Grid.Column="1" Content="Switch" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0" Grid.Row="1"/>
         <Button x:Name="BtUpdateCurAmount" Grid.Column="1" Content="Update" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
 
-        <TextBox x:Name="TbSourceCurAmount" Text="{Binding SourceAmount}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" Padding="2,2,2,2"/>
-        <TextBox x:Name="TbTargetCurAmount" Grid.Column="2" Text="{Binding TargetAmount}" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" Margin="5,0,5,0" Padding="2,2,2,2"/>
+        <TextBox x:Name="TbSourceCurAmount" Text="{Binding SourceAmount}" InputScope="Number" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" Padding="2,2,2,2"/>
+        <TextBox x:Name="TbTargetCurAmount" Grid.Column="2" Text="{Binding TargetAmount}" InputScope="Number" VerticalAlignment="Center" Grid.Row="2" Margin="5,0,5,0" Padding="2,2,2,2"/>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Source" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label Grid.Row="0" Grid.Column="2" Content="Target" HorizontalAlignment="Center" VerticalAlignment="Top"/>
