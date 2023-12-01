@@ -21,8 +21,8 @@
         <ComboBox x:Name="CbSourceCur" Grid.Column="0" ItemsSource="{Binding Currencies}" SelectedItem="{Binding SourceSelectedCurrency}" IsTextSearchEnabled="True" VerticalAlignment="Center" Margin="5,0,5,0" Padding="2,2,2,2" Grid.Row="1"/>
         <ComboBox x:Name="CbTargetCur" Grid.Column="2" ItemsSource="{Binding Currencies}" SelectedItem="{Binding TargetSelectedCurrency}" IsTextSearchEnabled="True" VerticalAlignment="Center" Margin="5,0,5,0" Padding="2,2,2,2" Grid.Row="1"/>
 
-        <Button x:Name="BtSwitchCur" Grid.Column="1" Content="Switch" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0" Grid.Row="1"/>
-        <Button x:Name="BtUpdateCurAmount" Grid.Column="1" Content="Update" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
+        <Button x:Name="BtSwitchCur" Grid.Column="1" Content="Switch" Width="{Binding ActualWidth, ElementName=BtUpdateCurAmount, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0" Grid.Row="1"/>
+        <Button x:Name="BtUpdateCurAmount" Grid.Column="1" Content="Update" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Padding="2,1,2,1"/>
 
         <TextBox x:Name="TbSourceCurAmount" Text="{Binding SourceAmount}" InputScope="Number" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" Padding="2,2,2,2"/>
         <TextBox x:Name="TbTargetCurAmount" Grid.Column="2" Text="{Binding TargetAmount}" InputScope="Number" VerticalAlignment="Center" Grid.Row="2" Margin="5,0,5,0" Padding="2,2,2,2"/>
